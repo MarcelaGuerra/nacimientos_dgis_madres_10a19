@@ -48,10 +48,15 @@ View(datos_sinac_yuc_descrip)
 sinac_yuc_edad<- datos_sinac_yuc_descrip %>%
   filter(EDADM<15) %>%
   count(Municipio) %>% #Se realiza un conteo por municipio
-  rename(Nacimientos=n) #La línea anterior generar una columna de conteo que se registra por default como n, esta línea renombra n
+  rename(Nacimientos=n) %>% #La línea anterior generar una columna de conteo que se registra por default como n, esta línea renombra n
+  arrange(desc(Nacimientos))
+View(sinac_yuc_edad)
 
 #Visualización de Lollipop horizontal
-ggplot(sinac_yuc_edad, aes(x=Municipio, y=Nacimientos)) +
+sinac_yuc_edad %>%
+  arrange(Nacimientos) %>% #se agregan las dos líneas de código, para ordenar de mayor a menor
+  mutate(Municipio=factor(Municipio,Municipio)) %>%
+  ggplot(aes(x=Municipio, y=Nacimientos)) +
   geom_segment( aes(x=Municipio, xend=Municipio, y=0, yend=Nacimientos), color="skyblue") +
   geom_point( color="blue", size=4, alpha=0.6) +
   theme_light() +
